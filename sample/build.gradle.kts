@@ -32,7 +32,7 @@ android {
 }
 
 dependencies {
-    implementation(project(":skeleton-painter-core"))
+    implementation(project(":easy-shimmer"))
     implementation(platform(libs.compose.bom))
     implementation(libs.bundles.compose)
     implementation(libs.androidx.core.ktx)

@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "coil-skeleton-painter"
+rootProject.name = "easy-shimmer-compose"
 include(":sample")
-include(":skeleton-painter-core")
+include(":easy-shimmer")
