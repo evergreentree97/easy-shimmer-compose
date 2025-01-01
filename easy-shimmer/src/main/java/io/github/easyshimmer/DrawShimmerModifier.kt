@@ -12,19 +12,26 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.layout.Measurable
+import androidx.compose.ui.layout.MeasureResult
+import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.node.DrawModifierNode
+import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
 import androidx.compose.ui.platform.InspectorInfo
+import androidx.compose.ui.unit.Constraints
 import kotlinx.coroutines.launch
 
 fun Modifier.drawShimmer(
-    visible: Boolean
-) = this then DrawShimmerElement(visible)
+    visible: Boolean,
+    enableFillMaxWidth: Boolean = true,
+) = this.then(DrawShimmerElement(visible, enableFillMaxWidth))
 
 private data class DrawShimmerElement(
-    val visible: Boolean
+    val visible: Boolean,
+    val enableFillMaxWidth: Boolean,
 ) : ModifierNodeElement<DrawShimmerModifier>() {
-    override fun create() = DrawShimmerModifier(visible)
+    override fun create() = DrawShimmerModifier(visible, enableFillMaxWidth)
 
     override fun update(node: DrawShimmerModifier) {
         node.visible = visible
@@ -37,8 +44,9 @@ private data class DrawShimmerElement(
 }
 
 internal class DrawShimmerModifier(
-    visible: Boolean
-) : Modifier.Node(), DrawModifierNode {
+    visible: Boolean,
+    private val enableFillMaxWidth: Boolean,
+) : Modifier.Node(), DrawModifierNode, LayoutModifierNode {
 
     var visible: Boolean = visible
         set(value) {
@@ -107,6 +115,29 @@ internal class DrawShimmerModifier(
             )
         } else {
             drawContent()
+        }
+    }
+
+    override fun MeasureScope.measure(
+        measurable: Measurable,
+        constraints: Constraints
+    ): MeasureResult {
+        val childConstraints = if (enableFillMaxWidth) {
+            constraints.copy(
+                minWidth = constraints.maxWidth,
+                maxWidth = constraints.maxWidth
+            )
+        } else {
+            constraints
+        }
+
+        val placeable = measurable.measure(childConstraints)
+
+        return layout(
+            width = placeable.width,
+            height = placeable.height
+        ) {
+            placeable.place(0, 0)
         }
     }
 }
