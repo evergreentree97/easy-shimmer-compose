@@ -1,4 +1,4 @@
-package io.github.easyshimmercompose.sample
+package io.github.easyshimmer.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,7 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import io.github.easyshimmercompose.rememberShimmerImagePainter
+import io.github.easyshimmer.rememberShimmerImagePainter
 
 class SampleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

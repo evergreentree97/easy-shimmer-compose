@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.easyshimmercompose"
+    namespace = "io.github.easyshimmer"
     compileSdk = 35
 
     defaultConfig {

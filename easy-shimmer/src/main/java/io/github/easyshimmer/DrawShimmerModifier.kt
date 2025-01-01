@@ -1,4 +1,4 @@
-package io.github.easyshimmercompose
+package io.github.easyshimmer
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
