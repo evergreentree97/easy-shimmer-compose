@@ -13,11 +13,7 @@ class SampleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Image(
-                modifier = Modifier.size(300.dp),
-                painter = rememberShimmerImagePainter(""),
-                contentDescription = null
-            )
+            SampleScreen()
         }
     }
 }
