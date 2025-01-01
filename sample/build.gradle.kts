@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "io.github.coilskeletonpainter"
+    namespace = "io.github.easyshimmercompose.sample"
     compileSdk = 35
 
     defaultConfig {
@@ -19,9 +19,6 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-    kotlinOptions {
-        jvmTarget = "1.8"
     }
     buildFeatures {
         compose = true

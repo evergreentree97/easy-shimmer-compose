@@ -13,7 +13,7 @@
         android:theme="@style/Theme.Coilskeletonpainter"
         tools:targetApi="31">
         <activity
-            android:name="io.github.coilskeletonpainter.SampleActivity"
+            android:name="io.github.easyshimmercompose.sample.SampleActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

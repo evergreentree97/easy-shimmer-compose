@@ -1,4 +1,4 @@
-package io.github.skeleton_painter_core
+package io.github.easyshimmercompose
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing

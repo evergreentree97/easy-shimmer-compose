@@ -1,4 +1,4 @@
-package io.github.coilskeletonpainter
+package io.github.easyshimmercompose.sample
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -7,8 +7,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.size
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import io.github.skeleton_painter_core.rememberShimmerImagePainter
+import io.github.easyshimmercompose.rememberShimmerImagePainter
 
 class SampleActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
