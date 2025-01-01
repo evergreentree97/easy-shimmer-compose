@@ -39,7 +39,7 @@ fun rememberShimmerImagePainter(
 ): Painter {
 
     val coroutineScope = rememberCoroutineScope()
-    val shimmerPainter = remember { ShimmerPainter(shimmerOptions) }
+    val shimmerPainter = remember(shimmerOptions) { ShimmerPainter(shimmerOptions) }
 
     return rememberAsyncImagePainter(
         model = model,
