@@ -1,6 +1,7 @@
 package io.github.easyshimmer
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.AnimationSpec
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.infiniteRepeatable
@@ -11,9 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
@@ -36,10 +35,11 @@ fun rememberShimmerImagePainter(
     onError: ((State.Error) -> Unit)? = null,
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
+    shimmerOptions: ShimmerOptions = ShimmerOptions.DEFAULT,
 ): Painter {
 
     val coroutineScope = rememberCoroutineScope()
-    val shimmerPainter = remember { ShimmerPainter() }
+    val shimmerPainter = remember { ShimmerPainter(shimmerOptions) }
 
     return rememberAsyncImagePainter(
         model = model,
@@ -63,27 +63,22 @@ fun rememberShimmerImagePainter(
     )
 }
 
-class ShimmerPainter : Painter() {
+class ShimmerPainter(
+    private val shimmerOptions: ShimmerOptions,
+) : Painter() {
 
-    private val anim by mutableStateOf(Animatable(0f))
+    private val effectAnimatable by mutableStateOf(Animatable(0f))
 
-    private val colors: List<Color> = listOf(
-        Color(0xFFD0D0D0),
-        Color(0xFFE3E3E3),
-        Color(0xFFD0D0D0)
-    )
-
+    private val colors: List<Color> = shimmerOptions.colors
     suspend fun start() {
-        anim.animateTo(
-            targetValue = 1f, animationSpec = infiniteRepeatable(
-                animation = tween(3000, easing = FastOutSlowInEasing),
-                repeatMode = RepeatMode.Restart
-            )
+        effectAnimatable.animateTo(
+            targetValue = 1f,
+            animationSpec = shimmerOptions.animationSpec
         )
     }
 
     suspend fun stop() {
-        anim.stop()
+        effectAnimatable.stop()
     }
 
     private var drawScopeSize: Size? = null
@@ -93,23 +88,9 @@ class ShimmerPainter : Painter() {
     override fun DrawScope.onDraw() {
         drawScopeSize = size
 
-        val start = Offset(
-            -size.width + (size.width * 2f * anim.value),
-            -size.height + (size.height * 2f * anim.value)
-        )
-
-        val end = Offset(start.x + size.width, start.y + size.height)
-
-        val brush = Brush.linearGradient(
-            colors = colors,
-            start = start,
-            end = end
-        )
-
-        drawRect(
-            brush,
-            Offset.Zero,
-            size
+        animatedDraw(
+            effectAnimatable = effectAnimatable,
+            colors = colors
         )
     }
 }
