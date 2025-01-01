@@ -1,5 +1,9 @@
 package io.github.easyshimmer.sample
 
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,9 +24,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.easyshimmer.ShimmerOptions
 import io.github.easyshimmer.drawShimmer
 import io.github.easyshimmer.rememberShimmerImagePainter
+import io.github.easyshimmer.shimmerDefaultColors
 import kotlinx.coroutines.delay
 
 @Composable
@@ -44,8 +51,25 @@ internal fun SampleScreen() {
         Image(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
-                .size(300.dp),
+                .size(200.dp),
             painter = rememberShimmerImagePainter("https://plus.unsplash.com/premium_photo-1673765123739-3862ccaeb3d6?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
+        )
+        Image(
+            modifier = Modifier
+                .clip(RoundedCornerShape(20.dp))
+                .size(200.dp),
+            painter = rememberShimmerImagePainter(
+                model = "https://plus.unsplash.com/premium_photo-1673765123739-3862ccaeb3d6?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                shimmerOptions = ShimmerOptions(
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1000, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Restart
+                    ),
+                    colors = shimmerDefaultColors
+                )
+            ),
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
@@ -59,6 +83,29 @@ internal fun SampleScreen() {
             } else {
                 "easy shimmer compose"
             },
+            textAlign = TextAlign.Center,
+        )
+        Text(
+            modifier = Modifier.drawShimmer(
+                visible = isLoading,
+                shimmerOptions = ShimmerOptions(
+                    animationSpec = infiniteRepeatable(
+                        animation = tween(1000, easing = FastOutSlowInEasing),
+                        repeatMode = RepeatMode.Restart
+                    ),
+                    colors = listOf(
+                        Color.Blue,
+                        Color.Blue.copy(0.5f),
+                        Color.Blue,
+                    )
+                )
+            ),
+            text = if (isLoading) {
+                ""
+            } else {
+                "easy shimmer compose"
+            },
+            textAlign = TextAlign.Center,
         )
     }
 }
