@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import io.github.easyshimmer.ShimmerOptions
 import io.github.easyshimmer.drawShimmer
 import io.github.easyshimmer.rememberShimmerImagePainter
-import io.github.easyshimmer.shimmerDefaultColors
 import kotlinx.coroutines.delay
 
 @Composable
@@ -67,7 +66,11 @@ internal fun SampleScreen() {
                         animation = tween(1000, easing = FastOutSlowInEasing),
                         repeatMode = RepeatMode.Restart
                     ),
-                    colors = shimmerDefaultColors
+                    colors = listOf(
+                        Color.Gray.copy(alpha = 0.8f),
+                        Color.Gray.copy(alpha = 0.4f),
+                        Color.Gray.copy(alpha = 0.8f),
+                    )
                 )
             ),
             contentDescription = null,

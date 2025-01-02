@@ -63,7 +63,7 @@ fun rememberShimmerImagePainter(
     )
 }
 
-class ShimmerPainter(
+private class ShimmerPainter(
     private val shimmerOptions: ShimmerOptions,
 ) : Painter() {
 
