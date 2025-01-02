@@ -1,24 +1,13 @@
 [versions]
 agp = "8.6.1"
 kotlin = "1.9.23"
-coreKtx = "1.15.0"
-junit = "4.13.2"
-junitVersion = "1.2.1"
-espressoCore = "3.6.1"
-appcompat = "1.7.0"
 material = "1.12.0"
 composeCompiler = "1.5.11"
 compose-bom = "2024.04.01"
 coil = "2.5.0"
 activity = "1.9.0"
-lifecycle = "2.7.0"
 
 [libraries]
-androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
-junit = { group = "junit", name = "junit", version.ref = "junit" }
-androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
-androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
-androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
@@ -26,13 +15,10 @@ ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
 ui-tooling-preview = { group = "androidx.compose.ui", name = "ui-tooling-preview" }
-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui-foundation = { group = "androidx.compose.foundation", name = "foundation" }
 material-compose = { group = "androidx.compose.material", name = "material" }
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
 activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activity" }
-lifecycle-compose = { group = "androidx.lifecycle", name = "lifecycle-runtime-compose", version.ref = "lifecycle" }
-
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -40,4 +26,4 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
 
 [bundles]
-compose = ["ui", "ui-graphics", "ui-tooling", "ui-tooling-preview", "material-compose", "coil-compose", "ui-foundation", "activity-compose", "lifecycle-compose", ]
+compose = ["ui", "ui-graphics", "ui-tooling", "ui-tooling-preview", "material-compose", "coil-compose", "ui-foundation", "activity-compose", ]
