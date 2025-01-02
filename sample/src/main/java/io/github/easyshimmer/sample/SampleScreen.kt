@@ -14,11 +14,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,16 +24,12 @@ import androidx.compose.ui.unit.dp
 import io.github.easyshimmer.ShimmerOptions
 import io.github.easyshimmer.drawShimmer
 import io.github.easyshimmer.rememberShimmerImagePainter
-import kotlinx.coroutines.delay
 
 @Composable
-internal fun SampleScreen() {
-    var isLoading by remember { mutableStateOf(true) }
-    LaunchedEffect(Unit) {
-        delay(2000L)
-        isLoading = false
-    }
-
+internal fun SampleScreen(
+    imageUrl: String,
+    text: String,
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -47,20 +38,23 @@ internal fun SampleScreen() {
         verticalArrangement = Arrangement.spacedBy(10.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        // Any Image composable that uses rememberShimmerImagePainter will display a Shimmer effect while loading.
         Image(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
                 .size(200.dp),
-            painter = rememberShimmerImagePainter("https://plus.unsplash.com/premium_photo-1673765123739-3862ccaeb3d6?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"),
+            painter = rememberShimmerImagePainter(imageUrl),
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
+
+        // 	You can modify options like animationSpec and colors, as demonstrated in the following example.
         Image(
             modifier = Modifier
                 .clip(RoundedCornerShape(20.dp))
                 .size(200.dp),
             painter = rememberShimmerImagePainter(
-                model = "https://plus.unsplash.com/premium_photo-1673765123739-3862ccaeb3d6?q=80&w=3000&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+                model = imageUrl,
                 shimmerOptions = ShimmerOptions(
                     animationSpec = infiniteRepeatable(
                         animation = tween(1000, easing = FastOutSlowInEasing),
@@ -76,21 +70,34 @@ internal fun SampleScreen() {
             contentDescription = null,
             contentScale = ContentScale.Crop,
         )
+
+        /*
+        *  Here is an example of using drawShimmer with a Text. You can also use it with other composables, such as Box, Row, or Column.
+        *  By default, the enableFillMaxWidth parameter is set to true,
+        *  causing the shimmer effect to fill the width of its parent. You can adjust this by applying padding.
+        * */
         Text(
             modifier = Modifier.drawShimmer(
-                visible = isLoading,
-                enableFillMaxWidth = false,
+                visible = text.isBlank(),
             ),
-            text = if (isLoading) {
-                ""
-            } else {
-                "easy shimmer compose"
-            },
+            text = text,
             textAlign = TextAlign.Center,
         )
+
+        // 	If you don’t want to apply the default FillMaxWidth Shimmer option, you must set enableFillMaxWidth to false.
         Text(
             modifier = Modifier.drawShimmer(
-                visible = isLoading,
+                visible = text.isBlank(),
+                enableFillMaxWidth = false,
+            ),
+            text = text,
+            textAlign = TextAlign.Center,
+        )
+
+        // 	You can modify options like animationSpec and colors, as demonstrated in the following example.
+        Text(
+            modifier = Modifier.drawShimmer(
+                visible = text.isBlank(),
                 shimmerOptions = ShimmerOptions(
                     animationSpec = infiniteRepeatable(
                         animation = tween(1000, easing = FastOutSlowInEasing),
@@ -103,11 +110,7 @@ internal fun SampleScreen() {
                     )
                 )
             ),
-            text = if (isLoading) {
-                ""
-            } else {
-                "easy shimmer compose"
-            },
+            text = text,
             textAlign = TextAlign.Center,
         )
     }
