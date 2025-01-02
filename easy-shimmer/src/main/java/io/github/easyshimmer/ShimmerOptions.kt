@@ -7,12 +7,6 @@ import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.graphics.Color
 
-val shimmerDefaultColors: List<Color> = listOf(
-    Color.Gray.copy(alpha = 0.8f),
-    Color.Gray.copy(alpha = 0.4f),
-    Color.Gray.copy(alpha = 0.8f),
-)
-
 data class ShimmerOptions(
     val animationSpec: AnimationSpec<Float>,
     val colors: List<Color>
@@ -23,7 +17,11 @@ data class ShimmerOptions(
                 animation = tween(3000, easing = FastOutSlowInEasing),
                 repeatMode = RepeatMode.Restart
             ),
-            colors = shimmerDefaultColors
+            colors = listOf(
+                Color.Gray.copy(alpha = 0.8f),
+                Color.Gray.copy(alpha = 0.4f),
+                Color.Gray.copy(alpha = 0.8f),
+            )
         )
     }
 }

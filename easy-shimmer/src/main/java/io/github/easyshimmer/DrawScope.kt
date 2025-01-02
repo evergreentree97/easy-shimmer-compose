@@ -7,7 +7,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
 
-fun DrawScope.animatedDraw(
+internal fun DrawScope.animatedDraw(
     effectAnimatable: Animatable<Float, AnimationVector1D>,
     colors: List<Color>,
 ) {
