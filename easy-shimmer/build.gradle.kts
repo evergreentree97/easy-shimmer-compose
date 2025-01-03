@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    id("maven-publish")
 }
 
 android {
@@ -24,4 +25,18 @@ android {
 
 dependencies {
     implementation(libs.coil.compose)
+}
+
+afterEvaluate {
+    publishing {
+        publications {
+            create<MavenPublication>("maven") {
+                groupId = "com.github.EvergreenTree97"
+                artifactId = "easy-shimmer-compose"
+                version = "0.0.1"
+
+                from(components["release"])
+            }
+        }
+    }
 }
