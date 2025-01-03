@@ -85,7 +85,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 ## ❤️ License
 
 ```
-Copyright 2025 EvergreenTree97 (Sangrok Choi)
+Copyright 2025 EvergreenTree97 (Sangrok Choi)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
