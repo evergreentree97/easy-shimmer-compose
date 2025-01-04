@@ -1,6 +1,6 @@
 [versions]
-agp = "8.1.1"
-kotlin = "1.9.0"
+agp = "8.1.4"
+kotlin = "1.9.23"
 material = "1.12.0"
 composeCompiler = "1.5.11"
 compose-bom = "2024.04.01"

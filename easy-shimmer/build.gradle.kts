@@ -4,7 +4,7 @@ plugins {
     id("maven-publish")
 }
 
-group = "com.github.EvergreenTree97"
+group = "com.github.evergreentree97"
 version = "0.0.1"
 
 android {
@@ -37,7 +37,7 @@ afterEvaluate {
     publishing {
         publications {
             create<MavenPublication>("maven") {
-                groupId = "com.github.EvergreenTree97"
+                groupId = "com.github.evergreentree97"
                 artifactId = "easy-shimmer-compose"
                 version = "0.0.1"
 
