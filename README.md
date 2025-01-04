@@ -36,7 +36,7 @@ Add the following dependency to your project's `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
-    implementation("io.github.evergreenTree97:easy-shimmer-compose:0.0.1") // Replace with the latest version
+    implementation("io.github.evergreentree97:easy-shimmer-compose:0.0.1") // Replace with the latest version
 }
 ```
 
