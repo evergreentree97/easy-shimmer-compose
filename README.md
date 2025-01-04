@@ -18,6 +18,20 @@ EasyshimmerCompose is a lightweight library that simplifies adding shimmer effec
 
 ### Gradle
 
+Add it in your root build.gradle or settings.gradle at the end of repositories:
+
+```kotlin
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        mavenCentral()
+        maven {
+            url = uri("https://jitpack.io")
+        }
+    }
+}
+```
+
 Add the following dependency to your project's `build.gradle.kts` file:
 
 ```kotlin
