@@ -1,8 +1,8 @@
 # 🏞️ EasyShimmerCompose
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![API](https://img.shields.io/badge/API-26%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=26)
-[![](https://jitpack.io/v/EvergreenTree97/easy-shimmer-compose.svg)](https://jitpack.io/#EvergreenTree97/easy-shimmer-compose)
+[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
+[![](https://jitpack.io/v/evergreentree97/easy-shimmer-compose.svg)](https://jitpack.io/#evergreentree97/easy-shimmer-compose)
 
 EasyshimmerCompose is a lightweight library that simplifies adding shimmer effects to your Jetpack Compose applications. Leveraging Coil's image loading capabilities, you can easily apply shimmer effects to images, text, or any other composable using the drawShimmer modifier or rememberShimmerImagePainter.
 
@@ -22,13 +22,15 @@ Add the following dependency to your project's `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
-    implementation("io.github.EvergreenTree97:easy-shimmer-compose:0.0.1") // Replace with the latest version
+    implementation("io.github.evergreenTree97:easy-shimmer-compose:0.0.1") // Replace with the latest version
 }
 ```
 
 ## 🛠️ Usage
 
 ### `rememberShimmerImagePainter`
+
+https://github.com/user-attachments/assets/5732027d-4503-4a0f-8f9f-14d1cb91bcd9
 
 `rememberShimmerImagePainter` returns a `Painter` that displays a shimmer effect while an image is loading. Use it with the `Image` composable.
 
@@ -45,8 +47,12 @@ Image(
 
 ### `drawShimmer` Modifier
 
+https://github.com/user-attachments/assets/e39de411-ef7b-46a1-8406-ce3933a244a0
+
 The `drawShimmer` modifier applies a shimmer effect to any Composable. You can use it with `Text`, `Box`, `Row`, `Column`, and others.
-By default, drawShimmer expands to fill the maximum available width thanks to the enableFillMaxWidth option being set to true. You can adjust the shimmer's size by applying padding to the composable:
+By default, drawShimmer expands to fill the maximum available width thanks to the enableFillMaxWidth option being set to true. You can a
+
+djust the shimmer's size by applying padding to the composable:
 
 ```kotlin
 // This shimmer effect will have horizontal padding, making it narrower than its parent.
@@ -86,7 +92,7 @@ Contributions are welcome! Please feel free to submit issues or pull requests.
 ## ❤️ License
 
 ```
-Copyright 2025 EvergreenTree97 (Sangrok Choi)
+Copyright 2025 evergreentree97 (Sangrok Choi)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
