@@ -1,11 +1,15 @@
 package io.github.easyshimmer
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.Measurable
 import androidx.compose.ui.layout.MeasureResult
 import androidx.compose.ui.layout.MeasureScope
@@ -91,18 +95,51 @@ internal class DrawShimmerModifier(
 ) : Modifier.Node(), DrawModifierNode, LayoutModifierNode {
 
     /**
-     * Whether the shimmer effect is currently visible. When changed from true to false,
-     * any ongoing animation is stopped.
+     * Whether the shimmer effect is currently visible.
      */
     var visible: Boolean = visible
         set(value) {
+            if (field == value) return
             field = value
-            if (!field && effectAnimatable.isRunning) {
-                coroutineScope.launch {
-                    effectAnimatable.stop()
+            if (isAttached) {
+                handleAnimations()
+            }
+        }
+
+    /**
+     * Control shimmer effect animation and shimmer visibility animation based on the visible state.
+     */
+    private fun handleAnimations() {
+        if (visible) {
+            coroutineScope.launch {
+                launch {
+                    shimmerEffectAnimatable.snapTo(0f)
+                    shimmerEffectAnimatable.animateTo(
+                        targetValue = 1f,
+                        animationSpec = shimmerOptions.shimmerAnimationSpec
+                    )
+                }
+                launch {
+                    shimmerVisibleAnimatable.animateTo(
+                        targetValue = 1f,
+                        animationSpec = shimmerOptions.crossFadeAnimationSpec
+                    )
+                }
+            }
+        } else {
+            coroutineScope.launch {
+                launch {
+                    shimmerEffectAnimatable.stop()
+                }
+                launch {
+                    shimmerVisibleAnimatable.animateTo(
+                        targetValue = 0f,
+                        animationSpec = shimmerOptions.crossFadeAnimationSpec
+                    )
                 }
             }
         }
+    }
 
     /**
      * The list of gradient [Color] values used for the shimmer effect.
@@ -110,28 +147,32 @@ internal class DrawShimmerModifier(
     private val colors: List<Color> = shimmerOptions.colors
 
     /**
+     * An [Animatable] controlling the progress of the visible animation of the shimmer.
+     */
+    private val shimmerVisibleAnimatable by mutableStateOf(Animatable(0f))
+
+    /**
+     * An [DerivedState] controlling the progress of the visible animation of the content.
+     */
+    private val contentVisibleAnimProgress by derivedStateOf { 1f - shimmerVisibleAnimatable.value }
+
+    /**
      * An [Animatable] controlling the progress of the shimmer animation.
      */
-    private val effectAnimatable by mutableStateOf(Animatable(0f))
+    private val shimmerEffectAnimatable by mutableStateOf(Animatable(0f))
+
+    /**
+     * A [Paint] controlling the alpha value for the visibility animation of the content.
+     */
+    private val contentLayerPaint = Paint()
 
     /**
      * Called when this node is attached to the composition. If [visible] is true,
-     * the shimmer animation begins; otherwise, it's immediately stopped.
+     * the shimmer animation begins.
      */
     override fun onAttach() {
         super.onAttach()
-        if (visible) {
-            coroutineScope.launch {
-                effectAnimatable.animateTo(
-                    targetValue = 1f,
-                    animationSpec = shimmerOptions.animationSpec
-                )
-            }
-        } else {
-            coroutineScope.launch {
-                effectAnimatable.stop()
-            }
-        }
+        handleAnimations()
     }
 
     /**
@@ -140,9 +181,14 @@ internal class DrawShimmerModifier(
      */
     override fun onDetach() {
         super.onDetach()
-        if (effectAnimatable.isRunning) {
+        if (shimmerEffectAnimatable.isRunning) {
             coroutineScope.launch {
-                effectAnimatable.stop()
+                shimmerEffectAnimatable.stop()
+            }
+        }
+        if (shimmerVisibleAnimatable.isRunning) {
+            coroutineScope.launch {
+                shimmerVisibleAnimatable.stop()
             }
         }
     }
@@ -152,13 +198,25 @@ internal class DrawShimmerModifier(
      * otherwise.
      */
     override fun ContentDrawScope.draw() {
-        if (visible) {
+        if (contentVisibleAnimProgress > 0f) {
+            drawIntoCanvas { canvas ->
+                canvas.saveLayer(
+                    bounds = size.toRect(),
+                    paint = contentLayerPaint.apply {
+                        alpha = contentVisibleAnimProgress
+                    }
+                )
+                drawContent()
+                canvas.restore()
+            }
+        }
+
+        if (shimmerVisibleAnimatable.value > 0f) {
             animatedDraw(
-                effectAnimatable = effectAnimatable,
+                visibleAnimatable = shimmerVisibleAnimatable,
+                effectAnimatable = shimmerEffectAnimatable,
                 colors = colors
             )
-        } else {
-            drawContent()
         }
     }
 
