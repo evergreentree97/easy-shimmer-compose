@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -56,10 +57,11 @@ internal fun SampleScreen(
             painter = rememberShimmerImagePainter(
                 model = imageUrl,
                 shimmerOptions = ShimmerOptions(
-                    animationSpec = infiniteRepeatable(
+                    shimmerAnimationSpec = infiniteRepeatable(
                         animation = tween(1000, easing = FastOutSlowInEasing),
                         repeatMode = RepeatMode.Restart
                     ),
+                    crossFadeAnimationSpec = tween(600),
                     colors = listOf(
                         Color.Gray.copy(alpha = 0.8f),
                         Color.Gray.copy(alpha = 0.4f),
@@ -86,10 +88,12 @@ internal fun SampleScreen(
 
         // 	If you don’t want to apply the default FillMaxWidth Shimmer option, you must set enableFillMaxWidth to false.
         Text(
-            modifier = Modifier.drawShimmer(
-                visible = text.isBlank(),
-                enableFillMaxWidth = false,
-            ),
+            modifier = Modifier
+                .widthIn(min = 100.dp)
+                .drawShimmer(
+                    visible = text.isBlank(),
+                    enableFillMaxWidth = false,
+                ),
             text = text,
             textAlign = TextAlign.Center,
         )
@@ -99,10 +103,11 @@ internal fun SampleScreen(
             modifier = Modifier.drawShimmer(
                 visible = text.isBlank(),
                 shimmerOptions = ShimmerOptions(
-                    animationSpec = infiniteRepeatable(
+                    shimmerAnimationSpec = infiniteRepeatable(
                         animation = tween(1000, easing = FastOutSlowInEasing),
                         repeatMode = RepeatMode.Restart
                     ),
+                    crossFadeAnimationSpec = tween(600),
                     colors = listOf(
                         Color.Blue,
                         Color.Blue.copy(0.5f),

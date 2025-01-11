@@ -117,7 +117,7 @@ private class ShimmerPainter(
     suspend fun start() {
         effectAnimatable.animateTo(
             targetValue = 1f,
-            animationSpec = shimmerOptions.animationSpec
+            animationSpec = shimmerOptions.shimmerAnimationSpec
         )
     }
 
