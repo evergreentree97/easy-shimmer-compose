@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 fun Modifier.drawShimmer(
     visible: Boolean,
     enableFillMaxWidth: Boolean = true,
-    shimmerOptions: ShimmerOptions = ShimmerOptions.DEFAULT,
+    shimmerOptions: ShimmerOptions = ShimmerDefaults.defaultShimmerOptions,
 ) = this.then(
     DrawShimmerElement(
         visible = visible,
