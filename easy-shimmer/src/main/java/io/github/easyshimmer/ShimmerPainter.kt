@@ -47,7 +47,7 @@ fun rememberShimmerImagePainter(
     onError: ((State.Error) -> Unit)? = null,
     contentScale: ContentScale = ContentScale.Fit,
     filterQuality: FilterQuality = DefaultFilterQuality,
-    shimmerOptions: ShimmerOptions = ShimmerOptions.DEFAULT,
+    shimmerOptions: ShimmerOptions = ShimmerDefaults.defaultShimmerOptions,
 ): Painter {
 
     val coroutineScope = rememberCoroutineScope()
