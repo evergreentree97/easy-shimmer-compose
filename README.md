@@ -1,9 +1,13 @@
 # 🏞️ EasyShimmerCompose
-
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
 [![](https://jitpack.io/v/evergreentree97/easy-shimmer-compose.svg)](https://jitpack.io/#evergreentree97/easy-shimmer-compose)
 
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/4bb09387-25b2-4625-a6f8-fb05af57101f" alt="image" style="width: 80%; height: auto;">
+</div>
+
+<br>
 EasyshimmerCompose is a lightweight library that simplifies adding shimmer effects to your Jetpack Compose applications. Leveraging Coil's image loading capabilities, you can easily apply shimmer effects to images, text, or any other composable using the drawShimmer modifier or rememberShimmerImagePainter.
 
 ## ✨ Features

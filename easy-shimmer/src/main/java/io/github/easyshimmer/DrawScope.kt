@@ -12,11 +12,14 @@ import androidx.compose.ui.graphics.drawscope.DrawScope
  * The gradient is built from [colors], and its start and end positions are calculated
  * based on the current value of [effectAnimatable], creating a moving highlight effect.
  *
+ * @param visibleAnimatable An [Animatable] controlling the shimmer visibility. If this value
+ * is null, the shimmer area will be displayed immediately without a visible animation.
  * @param effectAnimatable An [Animatable] controlling the shimmer position. As its value
  * progresses from 0f to 1f, the gradient shifts diagonally across the drawing area.
  * @param colors A list of [Color] values used to construct the gradient.
  */
 internal fun DrawScope.animatedDraw(
+    visibleAnimatable: Animatable<Float, AnimationVector1D>? = null,
     effectAnimatable: Animatable<Float, AnimationVector1D>,
     colors: List<Color>,
 ) {
@@ -35,6 +38,7 @@ internal fun DrawScope.animatedDraw(
 
     drawRect(
         brush = brush,
-        size = size
+        size = size,
+        alpha = visibleAnimatable?.value ?: 1f
     )
 }
