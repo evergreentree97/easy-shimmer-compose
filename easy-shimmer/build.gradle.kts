@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.coil.compose)
+    api(libs.coil.compose)
 }
 
 afterEvaluate {
