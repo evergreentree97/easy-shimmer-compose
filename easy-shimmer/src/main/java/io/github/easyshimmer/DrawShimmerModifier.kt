@@ -1,9 +1,6 @@
 package io.github.easyshimmer
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.toRect
 import androidx.compose.ui.graphics.Paint
@@ -176,17 +173,12 @@ internal class DrawShimmerModifier(
     /**
      * An [Animatable] controlling the progress of the visible animation of the shimmer.
      */
-    private val shimmerVisibleAnimatable by mutableStateOf(Animatable(0f))
-
-    /**
-     * An [DerivedState] controlling the progress of the visible animation of the content.
-     */
-    private val contentVisibleAnimProgress by derivedStateOf { 1f - shimmerVisibleAnimatable.value }
+    private val shimmerVisibleAnimatable = Animatable(0f)
 
     /**
      * An [Animatable] controlling the progress of the shimmer animation.
      */
-    private val shimmerEffectAnimatable by mutableStateOf(Animatable(0f))
+    private val shimmerEffectAnimatable = Animatable(0f)
 
     /**
      * A [Paint] controlling the alpha value for the visibility animation of the content.
@@ -203,34 +195,18 @@ internal class DrawShimmerModifier(
     }
 
     /**
-     * Called when this node is detached from the composition. Stops any running
-     * shimmer animation.
-     */
-    override fun onDetach() {
-        super.onDetach()
-        if (shimmerEffectAnimatable.isRunning) {
-            coroutineScope.launch {
-                shimmerEffectAnimatable.stop()
-            }
-        }
-        if (shimmerVisibleAnimatable.isRunning) {
-            coroutineScope.launch {
-                shimmerVisibleAnimatable.stop()
-            }
-        }
-    }
-
-    /**
      * Draws either the shimmer effect when [visible] is true, or the normal content
      * otherwise.
      */
     override fun ContentDrawScope.draw() {
-        if (contentVisibleAnimProgress > 0f) {
+        val contentAlpha = 1f - shimmerVisibleAnimatable.value
+
+        if (contentAlpha > 0f) {
             drawIntoCanvas { canvas ->
                 canvas.saveLayer(
                     bounds = size.toRect(),
                     paint = contentLayerPaint.apply {
-                        alpha = contentVisibleAnimProgress
+                        alpha = contentAlpha
                     }
                 )
                 drawContent()
