@@ -33,7 +33,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.github.EvergreenTree97"
                 artifactId = "easy-shimmer-compose"
-                version = "0.0.2"
+                version = providers.gradleProperty("libraryVersion").get()
 
                 from(components["release"])
             }
