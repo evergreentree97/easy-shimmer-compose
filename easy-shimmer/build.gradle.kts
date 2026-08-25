@@ -22,7 +22,12 @@ android {
 }
 
 dependencies {
-    implementation(libs.coil.compose)
+    api(platform(libs.compose.bom))
+    api(libs.runtime)
+    api(libs.animation.core)
+    api(libs.ui)
+    api(libs.ui.graphics)
+    api(libs.coil.compose)
 }
 
 afterEvaluate {

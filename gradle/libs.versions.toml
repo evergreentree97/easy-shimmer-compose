@@ -10,6 +10,8 @@ activity = "1.9.0"
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+runtime = { group = "androidx.compose.runtime", name = "runtime" }
+animation-core = { group = "androidx.compose.animation", name = "animation-core" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
