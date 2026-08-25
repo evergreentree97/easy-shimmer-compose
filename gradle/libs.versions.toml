@@ -1,9 +1,8 @@
 [versions]
 agp = "8.6.1"
-kotlin = "1.9.23"
+kotlin = "2.1.0"
 material = "1.12.0"
-composeCompiler = "1.5.11"
-compose-bom = "2024.04.01"
+compose-bom = "2024.12.01"
 coil = "2.5.0"
 activity = "1.9.0"
 
@@ -11,6 +10,8 @@ activity = "1.9.0"
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+runtime = { group = "androidx.compose.runtime", name = "runtime" }
+animation-core = { group = "androidx.compose.animation", name = "animation-core" }
 ui = { group = "androidx.compose.ui", name = "ui" }
 ui-graphics = { group = "androidx.compose.ui", name = "ui-graphics" }
 ui-tooling = { group = "androidx.compose.ui", name = "ui-tooling" }
@@ -24,6 +25,7 @@ activity-compose = { group = "androidx.activity", name = "activity-compose", ver
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
 [bundles]
 compose = ["ui", "ui-graphics", "ui-tooling", "ui-tooling-preview", "material-compose", "coil-compose", "ui-foundation", "activity-compose", ]

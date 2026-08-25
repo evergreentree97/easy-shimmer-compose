@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
     id("maven-publish")
 }
 
@@ -18,13 +19,15 @@ android {
     buildFeatures {
         compose = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.composeCompiler.get()
-    }
 }
 
 dependencies {
-    implementation(libs.coil.compose)
+    api(platform(libs.compose.bom))
+    api(libs.runtime)
+    api(libs.animation.core)
+    api(libs.ui)
+    api(libs.ui.graphics)
+    api(libs.coil.compose)
 }
 
 afterEvaluate {
@@ -33,7 +36,7 @@ afterEvaluate {
             create<MavenPublication>("maven") {
                 groupId = "com.github.EvergreenTree97"
                 artifactId = "easy-shimmer-compose"
-                version = "0.0.1"
+                version = providers.gradleProperty("libraryVersion").get()
 
                 from(components["release"])
             }
