@@ -76,6 +76,49 @@ fun rememberShimmerImagePainter(
 }
 
 /**
+ * Returns a [Painter] that applies a shimmer effect while the image is loading, reporting every
+ * request state through a single [onState] callback instead of one callback per state.
+ *
+ * Note that [State.Empty] is never reported; the callback is invoked for the loading, success
+ * and error states only.
+ *
+ * @param model The data model representing the image to load, which could be a URL or file path.
+ * @param placeholder A [Painter] to be displayed while the image is loading, or if none is supplied,
+ * a [ShimmerPainter] is used.
+ * @param error A [Painter] to display if the image request fails.
+ * @param fallback A [Painter] used if the requested image is not available. Defaults to [error].
+ * @param onState Callback invoked whenever the state of the image request changes.
+ * @param contentScale Defines how the image should be scaled within its bounds.
+ * @param filterQuality Controls the sampling algorithm applied to the image when scaling.
+ * @param shimmerOptions Configuration for the shimmer animation, defaults to
+ * [ShimmerDefaults.defaultShimmerOptions].
+ * @return A [Painter] that displays the loaded image or applies a shimmer effect while loading.
+ */
+@Composable
+@NonRestartableComposable
+fun rememberShimmerImagePainter(
+    model: Any?,
+    placeholder: Painter? = null,
+    error: Painter? = null,
+    fallback: Painter? = error,
+    onState: ((State) -> Unit)? = null,
+    contentScale: ContentScale = ContentScale.Fit,
+    filterQuality: FilterQuality = DefaultFilterQuality,
+    shimmerOptions: ShimmerOptions = ShimmerDefaults.defaultShimmerOptions,
+): Painter = rememberShimmerImagePainter(
+    model = model,
+    placeholder = placeholder,
+    error = error,
+    fallback = fallback,
+    onLoading = { onState?.invoke(it) },
+    onSuccess = { onState?.invoke(it) },
+    onError = { onState?.invoke(it) },
+    contentScale = contentScale,
+    filterQuality = filterQuality,
+    shimmerOptions = shimmerOptions,
+)
+
+/**
  * A custom [Painter] implementation that draws a shimmering effect on its content. The shimmer
  * effect is controlled by an [Animatable] that interpolates a value from 0f to 1f using the
  * provided [shimmerOptions]. Once `start()` is called, the animation runs until it reaches the
