@@ -8,7 +8,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.graphics.drawscope.DrawScope.Companion.DefaultFilterQuality
@@ -107,11 +106,6 @@ private class ShimmerPainter(
     private val effectAnimatable by mutableStateOf(Animatable(0f))
 
     /**
-     * The list of [Color]s used to draw the shimmer effect.
-     */
-    private val colors: List<Color> = shimmerOptions.colors
-
-    /**
      * Initiates the shimmer animation by animating [effectAnimatable] from 0f to 1f.
      */
     suspend fun start() {
@@ -151,7 +145,7 @@ private class ShimmerPainter(
 
         animatedDraw(
             effectAnimatable = effectAnimatable,
-            colors = colors
+            shimmerOptions = shimmerOptions
         )
     }
 }
