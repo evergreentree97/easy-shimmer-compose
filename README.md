@@ -1,6 +1,6 @@
 # 🏞️ EasyShimmerCompose
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
-[![API](https://img.shields.io/badge/API-24%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=24)
+[![API](https://img.shields.io/badge/API-28%2B-brightgreen.svg?style=flat)](https://android-arsenal.com/api?level=28)
 [![](https://jitpack.io/v/evergreentree97/easy-shimmer-compose.svg)](https://jitpack.io/#evergreentree97/easy-shimmer-compose)
 
 <div align="center">
@@ -40,7 +40,7 @@ Add the following dependency to your project's `build.gradle.kts` file:
 
 ```kotlin
 dependencies {
-    implementation("io.github.evergreentree97:easy-shimmer-compose:0.0.2") // Replace with the latest version
+    implementation("com.github.evergreentree97:easy-shimmer-compose:0.0.2") // Replace with the latest version
 }
 ```
 
@@ -68,9 +68,7 @@ Image(
 https://github.com/user-attachments/assets/e39de411-ef7b-46a1-8406-ce3933a244a0
 
 The `drawShimmer` modifier applies a shimmer effect to any Composable. You can use it with `Text`, `Box`, `Row`, `Column`, and others.
-By default, drawShimmer expands to fill the maximum available width thanks to the enableFillMaxWidth option being set to true. You can a
-
-djust the shimmer's size by applying padding to the composable:
+By default, drawShimmer expands to fill the maximum available width thanks to the enableFillMaxWidth option being set to true. You can adjust the shimmer's size by applying padding to the composable:
 
 ```kotlin
 // This shimmer effect will have horizontal padding, making it narrower than its parent.
@@ -87,16 +85,31 @@ Text(
 You can customize your shimmer effect with `ShimmerOptions`
 ```kotlin
 ShimmerOptions(
-    animationSpec = infiniteRepeatable(
+    shimmerAnimationSpec = infiniteRepeatable(
         animation = tween(1000, easing = FastOutSlowInEasing),
         repeatMode = RepeatMode.Restart
     ),
+    crossFadeAnimationSpec = tween(600),
     colors = listOf(
         Color.Blue,
         Color.Blue.copy(0.5f),
         Color.Blue,
     )
 )
+```
+
+To change the shimmer everywhere at once, set `ShimmerDefaults.defaultShimmerOptions` on
+application startup:
+
+```kotlin
+class MyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        ShimmerDefaults.defaultShimmerOptions = ShimmerOptions(
+            // ...
+        )
+    }
+}
 ```
 
 ## 📱 Sample
