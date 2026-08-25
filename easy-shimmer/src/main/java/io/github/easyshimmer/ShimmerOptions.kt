@@ -13,9 +13,11 @@ import androidx.compose.ui.graphics.Color
  * @property crossFadeAnimationSpec The [AnimationSpec] that defines how the cross fading animation
  * is interpolated over time.
  * @property colors A list of [Color] values used to construct the shimmer gradient.
+ * @property brush The kind of gradient the [colors] are laid out on.
  */
 data class ShimmerOptions(
     val shimmerAnimationSpec: AnimationSpec<Float>,
     val crossFadeAnimationSpec: AnimationSpec<Float>,
-    val colors: List<Color>
+    val colors: List<Color>,
+    val brush: ShimmerBrush = ShimmerBrush.Linear,
 )
