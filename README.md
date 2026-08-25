@@ -15,6 +15,7 @@ EasyshimmerCompose is a lightweight library that simplifies adding shimmer effec
 *   **Easy to Use**: Apply shimmer effects effortlessly with the `drawShimmer` modifier or `rememberShimmerImagePainter`.
 *   **Composable Versatility**:  Supports shimmer effects on various Composables, including images, text, `Box`, `Row`, and `Column`.
 *   **Animation Control**: Customize shimmer effects by adjusting `animationSpec` and `colors` through `ShimmerOptions`.
+*   **Gradient Choice**: Draw the shimmer as a linear band, a sweep or a radial highlight with `ShimmerBrush`.
 *   **FillMaxWidth Option**: Control the shimmer effect's width to match its parent Composable using the `enableFillMaxWidth` option.
 *   **Powered by Coil**: Utilizes Coil for efficient image loading and integration with rememberShimmerImagePainter.
 
@@ -111,6 +112,33 @@ class MyApplication : Application() {
     }
 }
 ```
+
+### `ShimmerBrush`
+
+The `brush` option of `ShimmerOptions` decides how the colors are laid out. `Linear` is the default.
+
+<div align="center">
+  <img src="art/shimmer_brushes.gif" alt="Linear, Sweep and Radial shimmer brushes" style="width: 80%; height: auto;">
+</div>
+
+```kotlin
+ShimmerOptions(
+    shimmerAnimationSpec = infiniteRepeatable(
+        animation = tween(1800, easing = LinearEasing),
+        repeatMode = RepeatMode.Restart
+    ),
+    crossFadeAnimationSpec = tween(600),
+    colors = listOf(
+        Color(0xFFCFCFCF),
+        Color(0xFFFDFDFD),
+        Color(0xFFCFCFCF),
+    ),
+    brush = ShimmerBrush.Sweep,
+)
+```
+
+`Sweep` reads the colors as a loop, so a palette whose first and last color differ shows a seam
+where the two meet.
 
 ## 📱 Sample
 
