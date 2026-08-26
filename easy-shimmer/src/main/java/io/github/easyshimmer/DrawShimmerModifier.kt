@@ -218,7 +218,7 @@ internal class DrawShimmerModifier(
             animatedDraw(
                 visibleAnimatable = shimmerVisibleAnimatable,
                 effectAnimatable = shimmerEffectAnimatable,
-                colors = shimmerOptions.colors
+                shimmerOptions = shimmerOptions
             )
         }
     }

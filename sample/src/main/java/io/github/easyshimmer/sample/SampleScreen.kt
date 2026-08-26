@@ -8,6 +8,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -22,6 +23,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import io.github.easyshimmer.ShimmerBrush
+import io.github.easyshimmer.ShimmerDefaults
 import io.github.easyshimmer.ShimmerOptions
 import io.github.easyshimmer.drawShimmer
 import io.github.easyshimmer.rememberShimmerImagePainter
@@ -97,6 +100,29 @@ internal fun SampleScreen(
             text = text,
             textAlign = TextAlign.Center,
         )
+
+        /*
+        *  The brush option decides how the colors are laid out. These three stay visible so the
+        *  difference between them is easy to see.
+        * */
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+        ) {
+            ShimmerBrush.entries.forEach { brush ->
+                Text(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .drawShimmer(
+                            visible = true,
+                            shimmerOptions = ShimmerDefaults.defaultShimmerOptions.copy(
+                                brush = brush,
+                            ),
+                        ),
+                    text = brush.name,
+                    textAlign = TextAlign.Center,
+                )
+            }
+        }
 
         // 	You can modify options like animationSpec and colors, as demonstrated in the following example.
         Text(
