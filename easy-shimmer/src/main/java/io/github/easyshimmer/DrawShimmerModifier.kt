@@ -16,6 +16,7 @@ import androidx.compose.ui.node.invalidateDraw
 import androidx.compose.ui.node.invalidateMeasurement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 
 /**
@@ -63,14 +64,15 @@ private data class DrawShimmerElement(
     )
 
     /**
-     * Updates the [node] with any changes to [enableFillMaxWidth], [shimmerOptions] and
-     * [visible]. [visible] is applied last so that a restarted animation already runs with
-     * the new options.
+     * Hands the latest values to the [node], which invalidates and restarts only what
+     * actually changed.
      */
     override fun update(node: DrawShimmerModifier) {
-        node.enableFillMaxWidth = enableFillMaxWidth
-        node.shimmerOptions = shimmerOptions
-        node.visible = visible
+        node.update(
+            visible = visible,
+            enableFillMaxWidth = enableFillMaxWidth,
+            shimmerOptions = shimmerOptions,
+        )
     }
 
     /**
@@ -80,6 +82,8 @@ private data class DrawShimmerElement(
     override fun InspectorInfo.inspectableProperties() {
         name = "drawShimmer"
         properties["visible"] = visible
+        properties["enableFillMaxWidth"] = enableFillMaxWidth
+        properties["shimmerOptions"] = shimmerOptions
     }
 }
 
@@ -90,85 +94,10 @@ private data class DrawShimmerElement(
  * when [enableFillMaxWidth] is true.
  */
 internal class DrawShimmerModifier(
-    visible: Boolean,
-    enableFillMaxWidth: Boolean,
-    shimmerOptions: ShimmerOptions,
+    private var visible: Boolean,
+    private var enableFillMaxWidth: Boolean,
+    private var shimmerOptions: ShimmerOptions,
 ) : Modifier.Node(), DrawModifierNode, LayoutModifierNode {
-
-    /**
-     * Whether the shimmer effect is currently visible.
-     */
-    var visible: Boolean = visible
-        set(value) {
-            if (field == value) return
-            field = value
-            if (isAttached) {
-                handleAnimations()
-            }
-        }
-
-    /**
-     * Whether the content is forced to fill the maximum available width.
-     */
-    var enableFillMaxWidth: Boolean = enableFillMaxWidth
-        set(value) {
-            if (field == value) return
-            field = value
-            if (isAttached) {
-                invalidateMeasurement()
-            }
-        }
-
-    /**
-     * The animation specs and colors the shimmer is drawn with. Replacing them while the
-     * shimmer is visible restarts the running animation so the new specs take effect.
-     */
-    var shimmerOptions: ShimmerOptions = shimmerOptions
-        set(value) {
-            if (field == value) return
-            field = value
-            if (isAttached) {
-                invalidateDraw()
-                if (visible) {
-                    handleAnimations()
-                }
-            }
-        }
-
-    /**
-     * Control shimmer effect animation and shimmer visibility animation based on the visible state.
-     */
-    private fun handleAnimations() {
-        if (visible) {
-            coroutineScope.launch {
-                launch {
-                    shimmerEffectAnimatable.snapTo(0f)
-                    shimmerEffectAnimatable.animateTo(
-                        targetValue = 1f,
-                        animationSpec = shimmerOptions.shimmerAnimationSpec
-                    )
-                }
-                launch {
-                    shimmerVisibleAnimatable.animateTo(
-                        targetValue = 1f,
-                        animationSpec = shimmerOptions.crossFadeAnimationSpec
-                    )
-                }
-            }
-        } else {
-            coroutineScope.launch {
-                launch {
-                    shimmerEffectAnimatable.stop()
-                }
-                launch {
-                    shimmerVisibleAnimatable.animateTo(
-                        targetValue = 0f,
-                        animationSpec = shimmerOptions.crossFadeAnimationSpec
-                    )
-                }
-            }
-        }
-    }
 
     /**
      * An [Animatable] controlling the progress of the visible animation of the shimmer.
@@ -184,6 +113,70 @@ internal class DrawShimmerModifier(
      * A [Paint] controlling the alpha value for the visibility animation of the content.
      */
     private val contentLayerPaint = Paint()
+
+    /**
+     * The job running the animations started by [handleAnimations], kept so that a
+     * restart cancels the previous one instead of leaving it to the [Animatable] mutex.
+     */
+    private var animationJob: Job? = null
+
+    /**
+     * Applies the latest values of the element. Every value is stored before anything is
+     * invalidated, so the order of the assignments carries no meaning. The animations are
+     * restarted when [visible] changed, or when the options changed while the shimmer is
+     * visible and the running animation would otherwise keep the old specs.
+     */
+    fun update(
+        visible: Boolean,
+        enableFillMaxWidth: Boolean,
+        shimmerOptions: ShimmerOptions,
+    ) {
+        if (this.enableFillMaxWidth != enableFillMaxWidth) {
+            this.enableFillMaxWidth = enableFillMaxWidth
+            invalidateMeasurement()
+        }
+
+        val optionsChanged = this.shimmerOptions != shimmerOptions
+        val visibleChanged = this.visible != visible
+        this.shimmerOptions = shimmerOptions
+        this.visible = visible
+
+        if (optionsChanged) {
+            invalidateDraw()
+        }
+        if (visibleChanged || (optionsChanged && visible)) {
+            handleAnimations()
+        }
+    }
+
+    /**
+     * Control shimmer effect animation and shimmer visibility animation based on the visible state.
+     */
+    private fun handleAnimations() {
+        animationJob?.cancel()
+        animationJob = coroutineScope.launch {
+            if (visible) {
+                launch {
+                    shimmerEffectAnimatable.snapTo(0f)
+                    shimmerEffectAnimatable.animateTo(
+                        targetValue = 1f,
+                        animationSpec = shimmerOptions.shimmerAnimationSpec
+                    )
+                }
+                launch {
+                    shimmerVisibleAnimatable.animateTo(
+                        targetValue = 1f,
+                        animationSpec = shimmerOptions.crossFadeAnimationSpec
+                    )
+                }
+            } else {
+                shimmerVisibleAnimatable.animateTo(
+                    targetValue = 0f,
+                    animationSpec = shimmerOptions.crossFadeAnimationSpec
+                )
+            }
+        }
+    }
 
     /**
      * Called when this node is attached to the composition. If [visible] is true,
