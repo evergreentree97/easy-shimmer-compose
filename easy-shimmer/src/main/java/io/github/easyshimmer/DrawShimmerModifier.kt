@@ -1,12 +1,8 @@
 package io.github.easyshimmer
 
 import androidx.compose.animation.core.Animatable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.toRect
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
 import androidx.compose.ui.graphics.drawscope.ContentDrawScope
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
@@ -16,6 +12,8 @@ import androidx.compose.ui.layout.MeasureScope
 import androidx.compose.ui.node.DrawModifierNode
 import androidx.compose.ui.node.LayoutModifierNode
 import androidx.compose.ui.node.ModifierNodeElement
+import androidx.compose.ui.node.invalidateDraw
+import androidx.compose.ui.node.invalidateMeasurement
 import androidx.compose.ui.platform.InspectorInfo
 import androidx.compose.ui.unit.Constraints
 import kotlinx.coroutines.launch
@@ -65,10 +63,13 @@ private data class DrawShimmerElement(
     )
 
     /**
-     * Updates the [node] with any changes to [visible], ensuring the shimmer
-     * effect is started or stopped as needed.
+     * Updates the [node] with any changes to [enableFillMaxWidth], [shimmerOptions] and
+     * [visible]. [visible] is applied last so that a restarted animation already runs with
+     * the new options.
      */
     override fun update(node: DrawShimmerModifier) {
+        node.enableFillMaxWidth = enableFillMaxWidth
+        node.shimmerOptions = shimmerOptions
         node.visible = visible
     }
 
@@ -90,8 +91,8 @@ private data class DrawShimmerElement(
  */
 internal class DrawShimmerModifier(
     visible: Boolean,
-    private val enableFillMaxWidth: Boolean,
-    private val shimmerOptions: ShimmerOptions,
+    enableFillMaxWidth: Boolean,
+    shimmerOptions: ShimmerOptions,
 ) : Modifier.Node(), DrawModifierNode, LayoutModifierNode {
 
     /**
@@ -103,6 +104,34 @@ internal class DrawShimmerModifier(
             field = value
             if (isAttached) {
                 handleAnimations()
+            }
+        }
+
+    /**
+     * Whether the content is forced to fill the maximum available width.
+     */
+    var enableFillMaxWidth: Boolean = enableFillMaxWidth
+        set(value) {
+            if (field == value) return
+            field = value
+            if (isAttached) {
+                invalidateMeasurement()
+            }
+        }
+
+    /**
+     * The animation specs and colors the shimmer is drawn with. Replacing them while the
+     * shimmer is visible restarts the running animation so the new specs take effect.
+     */
+    var shimmerOptions: ShimmerOptions = shimmerOptions
+        set(value) {
+            if (field == value) return
+            field = value
+            if (isAttached) {
+                invalidateDraw()
+                if (visible) {
+                    handleAnimations()
+                }
             }
         }
 
@@ -142,24 +171,14 @@ internal class DrawShimmerModifier(
     }
 
     /**
-     * The list of gradient [Color] values used for the shimmer effect.
-     */
-    private val colors: List<Color> = shimmerOptions.colors
-
-    /**
      * An [Animatable] controlling the progress of the visible animation of the shimmer.
      */
-    private val shimmerVisibleAnimatable by mutableStateOf(Animatable(0f))
-
-    /**
-     * An [DerivedState] controlling the progress of the visible animation of the content.
-     */
-    private val contentVisibleAnimProgress by derivedStateOf { 1f - shimmerVisibleAnimatable.value }
+    private val shimmerVisibleAnimatable = Animatable(0f)
 
     /**
      * An [Animatable] controlling the progress of the shimmer animation.
      */
-    private val shimmerEffectAnimatable by mutableStateOf(Animatable(0f))
+    private val shimmerEffectAnimatable = Animatable(0f)
 
     /**
      * A [Paint] controlling the alpha value for the visibility animation of the content.
@@ -176,34 +195,18 @@ internal class DrawShimmerModifier(
     }
 
     /**
-     * Called when this node is detached from the composition. Stops any running
-     * shimmer animation.
-     */
-    override fun onDetach() {
-        super.onDetach()
-        if (shimmerEffectAnimatable.isRunning) {
-            coroutineScope.launch {
-                shimmerEffectAnimatable.stop()
-            }
-        }
-        if (shimmerVisibleAnimatable.isRunning) {
-            coroutineScope.launch {
-                shimmerVisibleAnimatable.stop()
-            }
-        }
-    }
-
-    /**
      * Draws either the shimmer effect when [visible] is true, or the normal content
      * otherwise.
      */
     override fun ContentDrawScope.draw() {
-        if (contentVisibleAnimProgress > 0f) {
+        val contentAlpha = 1f - shimmerVisibleAnimatable.value
+
+        if (contentAlpha > 0f) {
             drawIntoCanvas { canvas ->
                 canvas.saveLayer(
                     bounds = size.toRect(),
                     paint = contentLayerPaint.apply {
-                        alpha = contentVisibleAnimProgress
+                        alpha = contentAlpha
                     }
                 )
                 drawContent()
@@ -215,7 +218,7 @@ internal class DrawShimmerModifier(
             animatedDraw(
                 visibleAnimatable = shimmerVisibleAnimatable,
                 effectAnimatable = shimmerEffectAnimatable,
-                colors = colors
+                colors = shimmerOptions.colors
             )
         }
     }
